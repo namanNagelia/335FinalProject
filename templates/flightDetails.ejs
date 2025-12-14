@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Flight Details</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+    <h1>Flight Details</h1>
+
+    <% if (flight) { %>
+        <p>Airline: <%= flight.airline ? flight.airline.name : 'Unknown' %>
+        </p>
+        <p>Flight Number: <%= flight.flight ? flight.flight.iata : 'Unknown' %>
+        </p>
+        <p>Status: <%= flight.flight_status || 'Unknown' %>
+        </p>
+
+        <h2>Departure</h2>
+        <p>Airport: <%= flight.departure ? flight.departure.airport : 'Unknown' %>
+        </p>
+        <p>IATA Code: <%= flight.departure ? flight.departure.iata : 'N/A' %>
+        </p>
+        <p>Scheduled: <%= flight.departure ? flight.departure.scheduled : 'N/A' %>
+        </p>
+        <% if (flight.departure && flight.departure.delay) { %>
+            <p>Delay: <%= flight.departure.delay %> minutes</p>
+            <% } %>
+
+                <h2>Arrival</h2>
+                <p>Airport: <%= flight.arrival ? flight.arrival.airport : 'Unknown' %>
+                </p>
+                <p>IATA Code: <%= flight.arrival ? flight.arrival.iata : 'N/A' %>
+                </p>
+                <p>Scheduled: <%= flight.arrival ? flight.arrival.scheduled : 'N/A' %>
+                </p>
+
+                <% } else { %>
+                    <p>No flight data found for this callsign.</p>
+                    <% } %>
+
+                        <footer>
+                            <a href="/">Home</a>
+                        </footer>
+</body>
+
+</html>
