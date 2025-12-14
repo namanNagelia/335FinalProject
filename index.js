@@ -5,6 +5,7 @@ const path = require("path");
 
 // const fetch = require("node-fetch");
 const { MongoClient, ServerApiVersion } = require("mongodb");
+const { name } = require("ejs");
 
 const app = express();
 const PORT = process.argv[2] || 4000;
@@ -64,16 +65,15 @@ app.get("/airport", async (req, res) => {
 
     const data = await response.json();
 
-    res.json({
-      ident: data.ident,
+    console.log("data", data);
+    res.render("airportDetails", {
       name: data.name,
-      iata: data.iata_code,
-      icao: data.icao_code,
-      lat: data.latitude_deg,
-      lon: data.longitude_deg,
+      icao_code: data.icao_code,
+      iata_code: data.iata_code,
+      latitude_deg: data.latitude_deg,
+      longitude_deg: data.longitude_deg,
       elevation_ft: data.elevation_ft,
-      runways: data.runways,
-      freqs: data.freqs,
+      flights: data.flights,
     });
   } catch {
     res.status(500).json({ error: "Failed to fetch airport data" });
@@ -111,7 +111,7 @@ app.get("/opensky/airport", async (req, res) => {
 
     const openSkyData = await openSkyRes.json();
 
-    res.json({
+    res.render("airportFlights", {
       airport: {
         name: airport.name,
         icao: airport.icao_code,
@@ -122,14 +122,14 @@ app.get("/opensky/airport", async (req, res) => {
       planes:
         openSkyData.states?.map((s) => ({
           icao24: s[0],
-          callsign: s[1]?.trim(),
+          callsign: s[1]?.trim() || "(unknown)",
           lat: s[6],
           lon: s[5],
           altitude_m: s[7],
           speed_mps: s[9],
           heading: s[10],
           on_ground: s[8],
-        })) || [],
+        })).sort((a, b) => a.callsign.localeCompare(b.callsign)) || [],
     });
   } catch {
     res.status(500).json({ error: "Failed to fetch live airport planes" });
@@ -202,4 +202,8 @@ app.get("/flight/details", async (req, res) => {
 
 app.get("/", (req, res) => {
   res.render("home");
+});
+
+app.get("/airportQuery", async (req, res) => {
+  res.render("airportQueryForm");
 });

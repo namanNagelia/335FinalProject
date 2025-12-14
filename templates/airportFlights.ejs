@@ -1,0 +1,17 @@
+<DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Airport Flights</title>
+  </head>
+  <body>
+    <h1>Airport Flights</h1>
+    <p>Flights at <%= airport.name %></p>
+    <ul>
+      <% planes.forEach(function(plane) { %>
+        <li>
+          Callsign: <%= plane.callsign %> - Latitude: <%= plane.lat %> - Longitude: <%= plane.lon %> <a href="/opensky/location?lat=<%= plane.lat %>&lon=<%= plane.lon %>">View Plane</a> <a href="/opensky/flight=<%= plane.icao24 %>">View Flight</a>
+        </li>
+      <% }); %>
+    </ul>
+  </body>
+</html>
