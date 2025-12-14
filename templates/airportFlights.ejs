@@ -9,7 +9,7 @@
     <ul>
       <% planes.forEach(function(plane) { %>
         <li>
-          Callsign: <%= plane.callsign %> - Latitude: <%= plane.lat %> - Longitude: <%= plane.lon %> <a href="/opensky/location?lat=<%= plane.lat %>&lon=<%= plane.lon %>">View Plane</a> <a href="/opensky/flight=<%= plane.icao24 %>">View Flight</a>
+          Callsign: <%= plane.callsign %> - Latitude: <%= plane.lat %> - Longitude: <%= plane.lon %> <a href="/opensky/location?lat=<%= plane.lat %>&lon=<%= plane.lon %>">View Plane</a> <a href="/flight/details?callsign=<%= plane.callsign %>">View Flight</a>
         </li>
       <% }); %>
     </ul>
