@@ -12,31 +12,29 @@
   </p>
 
   <!-- Map -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-  <div id="map" style="width: 600px; height: 450px;"></div>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <div id="map" style="width: 600px; height: 450px;" data-center-lat="<%= location.lat %>"
+    data-center-lon="<%= location.lon %>" data-planes='<%- JSON.stringify(
+      ((airborneFlights && airborneFlights.flying) ? airborneFlights.flying : [])
+        .concat((airborneFlights && airborneFlights.landed) ? airborneFlights.landed : [])
+        .filter(function (f) { return f && f.lat != null && f.lon != null; })
+    ) %>'>
+  </div>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
     (function () {
-      var centerLat = Number("<%= location.lat %>");
-      var centerLon = Number("<%= location.lon %>");
+      var mapEl = document.getElementById('map');
+      var centerLat = Number(mapEl.getAttribute('data-center-lat'));
+      var centerLon = Number(mapEl.getAttribute('data-center-lon'));
       var map = L.map('map').setView([centerLat, centerLon], 8);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(map);
 
-      var planes = [
-        <% (airborneFlights.flying || []).forEach(function (f, i) {
-        if (f.lat != null && f.lon != null) { %>
-          { callsign: "<%= f.callsign %>", lat: <%= f.lat %>, lon: <%= f.lon %>, on_ground: <%= f.on_ground %> } <%= ',' %>
-        <% }
-      }); %>
-        <% (airborneFlights.landed || []).forEach(function (f, i) {
-        if (f.lat != null && f.lon != null) { %>
-          { callsign: "<%= f.callsign %>", lat: <%= f.lat %>, lon: <%= f.lon %>, on_ground: <%= f.on_ground %> } <%= ',' %>
-        <% }
-      }); %>
-      ];
+      var planes = JSON.parse(mapEl.getAttribute('data-planes'));
 
       planes.forEach(function (p) {
         if (p.on_ground === true) {
@@ -67,6 +65,9 @@
       </li>
       <% }); %>
   </ul>
+  <footer>
+    <a href="/">Home</a>
+  </footer>
 </body>
 </head>
 

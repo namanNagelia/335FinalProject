@@ -1,21 +1,28 @@
 <DOCTYPE html>
-<html lang="en">
+  <html lang="en">
+
   <head>
     <title>Airport Flights</title>
   </head>
+
   <body>
     <h1>Airport Flights</h1>
-    <p>Flights at <%= airport.name %></p>
+    <p>Flights at <%= airport.name %>
+    </p>
     <ul>
       <% planes.forEach(function(plane) { %>
         <li>
-          Callsign: <%= plane.callsign %> - 
-          Latitude: <%= plane.lat %> - 
-          Longitude: <%= plane.lon %> 
-          <a href="/opensky/location?lat=<%= plane.lat %>&lon=<%= plane.lon %>">View Location</a> 
-          <a href="/flight/details?callsign=<%= plane.callsign %>">View Flight</a>
+          Callsign: <%= plane.callsign %> -
+            Latitude: <%= plane.lat %> -
+              Longitude: <%= plane.lon %>
+                <a href="/opensky/location?lat=<%= plane.lat %>&lon=<%= plane.lon %>">View Location</a>
+                <a href="/flight/details?callsign=<%= plane.callsign %>">View Flight</a>
         </li>
-      <% }); %>
+        <% }); %>
     </ul>
+    <footer>
+      <a href="/">Home</a>
+    </footer>
   </body>
-</html>
+
+  </html>
