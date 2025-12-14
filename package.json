@@ -1,0 +1,14 @@
+{
+  "name": "335finalproject",
+  "version": "1.0.0",
+  "description": "Miguel, Naman and Ishaans Final project for CMSC335",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mongodb": "^6.21.0"
+  }
+}
