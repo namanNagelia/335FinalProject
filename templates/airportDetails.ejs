@@ -7,23 +7,33 @@
 </head>
 
 <body>
-  <h1>Airport Details</h1>
-  <p>Airport Name: <%= name %>
-  </p>
-  <p>Airport ICAO: <%= icao_code %>
-  </p>
-  <p>Airport IATA: <%= iata_code %>
-  </p>
-  <p>Airport Latitude: <%= latitude_deg %>
-  </p>
-  <p>Airport Longitude: <%= longitude_deg %>
-  </p>
-  <p>Airport Elevation: <%= elevation_ft %>
-  </p>
-  <p> View flights at this airport: <a href="/opensky/airport?icao=<%= icao_code %>">View Flights</a></p>
-  <p> View flights in a radius around this airport: <a
-      href="/opensky/location?lat=<%= latitude_deg %>&lon=<%= longitude_deg %>">View Flights</a></p>
-  </ul>
+  <header>
+    <h1>Airport Details</h1>
+  </header>
+  <main>
+    <p><strong>Airport Name:</strong>
+      <%= name %>
+    </p>
+    <p><strong>Airport ICAO:</strong>
+      <%= icao_code %>
+    </p>
+    <p><strong>Airport IATA:</strong>
+      <%= iata_code %>
+    </p>
+    <p><strong>Airport Latitude:</strong>
+      <%= latitude_deg %>
+    </p>
+    <p><strong>Airport Longitude:</strong>
+      <%= longitude_deg %>
+    </p>
+    <p><strong>Airport Elevation:</strong>
+      <%= elevation_ft %>
+    </p>
+    <p><strong>View flights at this airport:</strong> <a href="/opensky/airport?icao=<%= icao_code %>">View Flights</a>
+    </p>
+    <p><strong>View flights in a radius around this airport:</strong> <a
+        href="/opensky/location?lat=<%= latitude_deg %>&lon=<%= longitude_deg %>">View Flights</a></p>
+  </main>
   <footer>
     <a href="/">Home</a>
   </footer>

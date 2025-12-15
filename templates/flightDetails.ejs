@@ -13,81 +13,54 @@
 
     <main>
         <% if (typeof saved !== 'undefined' && saved) { %>
-        <div class="alert alert-success">Flight saved to your watchlist!</div>
+		<div>Flight saved to your watchlist!</div>
         <% } %>
 
         <% if (flight) { %>
-        <div class="detail-card">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                <div>
-                    <div class="muted">Airline</div>
-                    <div class="detail-value"><%= flight.airline ? flight.airline.name : 'Unknown' %></div>
-                    <div class="small"><%= flight.airline ? (flight.airline.iata + ' / ' + flight.airline.icao) : '' %></div>
-                </div>
-                <div style="text-align:right;">
-                    <div class="muted">Flight</div>
-                    <div class="detail-value"><%= flight.flight ? (flight.flight.iata || flight.flight.icao || flight.flight.number) : 'Unknown' %></div>
-                    <div class="badge"><%= flight.flight_status || 'Unknown' %></div>
-                </div>
-            </div>
+		<p><strong>Airline:</strong> <%= flight.airline ? flight.airline.name : 'Unknown' %></p>
+		<p><%= flight.airline ? (flight.airline.iata + ' / ' + flight.airline.icao) : '' %></p>
+		<p><strong>Flight:</strong> <%= flight.flight ? (flight.flight.iata || flight.flight.icao || flight.flight.number) : 'Unknown' %></p>
+		<p><strong>Status:</strong> <%= flight.flight_status || 'Unknown' %></p>
 
-            <div class="detail-grid">
-                <div>
-                    <div class="detail-row"><div class="detail-key">Departure</div><div class="detail-value"><%= flight.departure ? flight.departure.airport : 'Unknown' %></div></div>
-                    <div class="detail-row"><div class="detail-key">IATA / ICAO</div><div class="detail-value"><%= flight.departure ? (flight.departure.iata || 'N/A') + ' / ' + (flight.departure.icao || 'N/A') : 'N/A' %></div></div>
-                    <div class="detail-row"><div class="detail-key">Scheduled</div><div class="detail-value"><%= flight.departure ? flight.departure.scheduled : 'N/A' %></div></div>
-                    <div class="detail-row"><div class="detail-key">Delay</div><div class="detail-value"><%= flight.departure && flight.departure.delay ? flight.departure.delay + ' min' : '—' %></div></div>
-                </div>
-                <div>
-                    <div class="detail-row"><div class="detail-key">Arrival</div><div class="detail-value"><%= flight.arrival ? flight.arrival.airport : 'Unknown' %></div></div>
-                    <div class="detail-row"><div class="detail-key">IATA / ICAO</div><div class="detail-value"><%= flight.arrival ? (flight.arrival.iata || 'N/A') + ' / ' + (flight.arrival.icao || 'N/A') : 'N/A' %></div></div>
-                    <div class="detail-row"><div class="detail-key">Scheduled</div><div class="detail-value"><%= flight.arrival ? flight.arrival.scheduled : 'N/A' %></div></div>
-                    <div class="detail-row"><div class="detail-key">Gate / Baggage</div><div class="detail-value"><%= flight.arrival ? ((flight.arrival.gate || '—') + ' / ' + (flight.arrival.baggage || '—')) : '—' %></div></div>
-                </div>
-            </div>
+		<p><strong>Departure:</strong> <%= flight.departure ? flight.departure.airport : 'Unknown' %></p>
+		<p><strong>IATA / ICAO:</strong> <%= flight.departure ? (flight.departure.iata || 'N/A') + ' / ' + (flight.departure.icao || 'N/A') : 'N/A' %></p>
+		<p><strong>Scheduled:</strong> <%= flight.departure ? flight.departure.scheduled : 'N/A' %></p>
+		<p><strong>Delay:</strong> <%= flight.departure && flight.departure.delay ? flight.departure.delay + ' min' : '—' %></p>
 
-            <div style="margin-top:12px;">
-                <div class="muted">Aircraft</div>
-                <div class="small"><%= flight.aircraft ? (flight.aircraft.icao24 || '—') : '—' %></div>
-            </div>
+		<p><strong>Arrival:</strong> <%= flight.arrival ? flight.arrival.airport : 'Unknown' %></p>
+		<p><strong>IATA / ICAO:</strong> <%= flight.arrival ? (flight.arrival.iata || 'N/A') + ' / ' + (flight.arrival.icao || 'N/A') : 'N/A' %></p>
+		<p><strong>Scheduled:</strong> <%= flight.arrival ? flight.arrival.scheduled : 'N/A' %></p>
+		<p><strong>Gate / Baggage:</strong> <%= flight.arrival ? ((flight.arrival.gate || '—') + ' / ' + (flight.arrival.baggage || '—')) : '—' %></p>
 
-            <div class="save-flight-inline">
-                <h3>Save to Watchlist</h3>
-                <form action="/saved/quick-add" method="POST">
-                    <input type="hidden" name="callsign" value="<%= flight.flight ? (flight.flight.icao || flight.flight.iata || '') : '' %>">
-                    <input type="hidden" name="flightIata" value="<%= flight.flight ? (flight.flight.iata || '') : '' %>">
-                    <input type="hidden" name="airline" value="<%= flight.airline ? flight.airline.name : '' %>">
-                    <input type="hidden" name="departureAirport" value="<%= flight.departure ? flight.departure.airport : '' %>">
-                    <input type="hidden" name="departureIata" value="<%= flight.departure ? flight.departure.iata : '' %>">
-                    <input type="hidden" name="arrivalAirport" value="<%= flight.arrival ? flight.arrival.airport : '' %>">
-                    <input type="hidden" name="arrivalIata" value="<%= flight.arrival ? flight.arrival.iata : '' %>">
-                    <input type="hidden" name="status" value="<%= flight.flight_status || '' %>">
+		<p><strong>Aircraft:</strong> <%= flight.aircraft ? (flight.aircraft.icao24 || '—') : '—' %></p>
 
-                    <div class="inline-form-row">
-                        <div class="form-group">
-                            <label for="priority">Priority</label>
-                            <select name="priority" id="priority">
-                                <option value="low">Low</option>
-                                <option value="medium">Medium</option>
-                                <option value="high">High</option>
-                            </select>
-                        </div>
-                        <div class="form-group" style="flex: 2;">
-                            <label for="notes">Notes (optional)</label>
-                            <input type="text" name="notes" id="notes" placeholder="e.g., Family arriving, Business trip...">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save Flight</button>
-                    </div>
-                </form>
-            </div>
+		<h3>Save to Watchlist</h3>
+		<form action="/saved/quick-add" method="POST">
+			<input type="hidden" name="callsign" value="<%= flight.flight ? (flight.flight.icao || flight.flight.iata || '') : '' %>">
+			<input type="hidden" name="flightIata" value="<%= flight.flight ? (flight.flight.iata || '') : '' %>">
+			<input type="hidden" name="airline" value="<%= flight.airline ? flight.airline.name : '' %>">
+			<input type="hidden" name="departureAirport" value="<%= flight.departure ? flight.departure.airport : '' %>">
+			<input type="hidden" name="departureIata" value="<%= flight.departure ? flight.departure.iata : '' %>">
+			<input type="hidden" name="arrivalAirport" value="<%= flight.arrival ? flight.arrival.airport : '' %>">
+			<input type="hidden" name="arrivalIata" value="<%= flight.arrival ? flight.arrival.iata : '' %>">
+			<input type="hidden" name="status" value="<%= flight.flight_status || '' %>">
 
-            <div style="margin-top:14px;">
-                <div class="muted">Raw JSON</div>
-                <pre style="background:#0f172a;color:#f8fafc;padding:12px;border-radius:8px;overflow:auto;margin-top:8px;font-size:13px;"> <%= JSON.stringify(flight, null, 2) %> </pre>
-            </div>
-        </div>
+			<label for="priority">Priority</label>
+			<select name="priority" id="priority">
+				<option value="low">Low</option>
+				<option value="medium">Medium</option>
+				<option value="high">High</option>
+			</select>
+
+			<label for="notes">Notes (optional)</label>
+			<input type="text" name="notes" id="notes" placeholder="e.g., Family arriving, Business trip...">
+			<button type="submit">Save Flight</button>
+		</form>
+
+		<h3>Raw JSON</h3>
+		<pre> <%= JSON.stringify(flight, null, 2) %> </pre>
         <% } else { %>
-        <div class="detail-card"><div class="no-data">No flight data found for this callsign.</div></div>
+		<p>No flight data found for this callsign.</p>
         <% } %>
     </main>
 

@@ -1,71 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>Airport Flights</title>
   <link rel="stylesheet" href="/styles.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 </head>
+
 <body>
   <header>
     <h1>Flights — <%= airport.name %> (<%= airport.icao %>)</h1>
   </header>
   <main>
-    <p class="intro">Live aircraft near the airport. Click a marker for details.</p>
-    <div class="board">
-      <section class="board-left">
-        <div class="board-title">
-          <strong>Arrivals / Departures</strong>
-          <span class="pill"><%= planes.length %> aircraft</span>
-        </div>
-        <table class="board-table">
-          <thead>
+    <p>Live aircraft near the airport. Click a marker for details.</p>
+    <aside>
+      <div id="map" data-center-lat="<%= airport.lat %>" data-center-lon="<%= airport.lon %>"
+        data-planes='<%- JSON.stringify((planes || []).filter(function(p){ return p && p.lat != null && p.lon != null; })) %>'>
+      </div>
+    </aside>
+    <section>
+      <p><strong>Arrivals / Departures</strong> — <%= planes.length %> aircraft</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Callsign</th>
+            <th>Alt</th>
+            <th>Speed</th>
+            <th>Heading</th>
+            <th>Position</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (!planes || planes.length===0) { %>
             <tr>
-              <th>Callsign</th>
-              <th>Alt</th>
-              <th>Speed</th>
-              <th>Heading</th>
-              <th>Position</th>
-              <th></th>
+              <td colspan="6">No aircraft found in the area</td>
             </tr>
-          </thead>
-          <tbody>
-            <% if (!planes || planes.length === 0) { %>
-              <tr><td colspan="6" class="no-data">No aircraft found in the area</td></tr>
             <% } else { %>
               <% planes.forEach(function(plane) { %>
-                <tr class="<%= plane.on_ground ? 'status-ground' : '' %>">
-                  <td><span class="callsign"><%= plane.callsign %></span><div class="meta"><%= plane.icao24 %></div></td>
-                  <td><%= plane.altitude_m != null ? Math.round(plane.altitude_m) + ' m' : '—' %></td>
-                  <td><%= plane.speed_mps != null ? Math.round(plane.speed_mps) + ' m/s' : '—' %></td>
-                  <td><%= plane.heading != null ? Math.round(plane.heading) + '°' : '—' %></td>
-                  <td><%= plane.lat != null ? plane.lat.toFixed(4) : '—' %>, <%= plane.lon != null ? plane.lon.toFixed(4) : '—' %></td>
-                  <td class="links">
+                <tr>
+                  <td>
+                    <%= plane.callsign %><br>
+                      <%= plane.icao24 %>
+                  </td>
+                  <td>
+                    <%= plane.altitude_m !=null ? Math.round(plane.altitude_m) + ' m' : '—' %>
+                  </td>
+                  <td>
+                    <%= plane.speed_mps !=null ? Math.round(plane.speed_mps) + ' m/s' : '—' %>
+                  </td>
+                  <td>
+                    <%= plane.heading !=null ? Math.round(plane.heading) + '°' : '—' %>
+                  </td>
+                  <td>
+                    <%= plane.lat !=null ? plane.lat.toFixed(4) : '—' %>, <%= plane.lon !=null ? plane.lon.toFixed(4)
+                        : '—' %>
+                  </td>
+                  <td>
                     <a href="/opensky/location?lat=<%= plane.lat %>&lon=<%= plane.lon %>">Nearby</a>
                     <a href="/flight/details?callsign=<%= plane.callsign %>">Details</a>
-                    <form action="/saved/quick-add" method="POST" style="display:inline;">
+                    <form action="/saved/quick-add" method="POST">
                       <input type="hidden" name="callsign" value="<%= plane.callsign %>">
                       <input type="hidden" name="notes" value="Spotted near <%= airport.name %>">
-                      <button type="submit" class="btn btn-small btn-secondary" style="padding:4px 8px;font-size:11px;">Save</button>
+                      <button type="submit">Save</button>
                     </form>
                   </td>
                 </tr>
-              <% }); %>
-            <% } %>
-          </tbody>
-        </table>
-      </section>
-      <aside class="board-right">
-        <div id="map"
-          data-center-lat="<%= airport.lat %>"
-          data-center-lon="<%= airport.lon %>"
-          data-planes='<%- JSON.stringify((planes || []).filter(function(p){ return p && p.lat != null && p.lon != null; })) %>'>
-        </div>
-      </aside>
-    </div>
+                <% }); %>
+                  <% } %>
+        </tbody>
+      </table>
+    </section>
   </main>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
-    (function(){
+    (function () {
       var mapEl = document.getElementById('map');
       var centerLat = Number(mapEl.getAttribute('data-center-lat')) || 0;
       var centerLon = Number(mapEl.getAttribute('data-center-lon')) || 0;
@@ -74,15 +85,15 @@
 
       var planes = JSON.parse(mapEl.getAttribute('data-planes')) || [];
 
-      function planeHtml(color, heading){
+      function planeHtml(color, heading) {
         var svg = "<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='currentColor'><path d='M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9L2 14v2l7-1v4l-2 1v1l3-0.5L12 20l2 .5 3 .5v-1l-2-1v-4l7 1z'/></svg>";
-        return "<div class='plane-icon' style='color:"+color+"; transform: rotate("+(heading||0)+"deg);'>"+svg+"</div>";
+        return "<div class='plane-icon' style='color:" + color + "; transform: rotate(" + (heading || 0) + "deg);'>" + svg + "</div>";
       }
 
-      planes.forEach(function(p){
+      planes.forEach(function (p) {
         var color = p.on_ground ? '#64748b' : '#ef4444';
-        var icon = L.divIcon({ className: '', html: planeHtml(color, p.heading), iconSize: [30,30], iconAnchor: [15,15] });
-        L.marker([p.lat, p.lon], { icon: icon }).addTo(map).bindPopup('<strong>'+ (p.callsign || '(unknown)') +'</strong><br/>' + (p.lat?('Lat: '+p.lat.toFixed(4)+' Lon: '+p.lon.toFixed(4)) : ''));
+        var icon = L.divIcon({ className: '', html: planeHtml(color, p.heading), iconSize: [30, 30], iconAnchor: [15, 15] });
+        L.marker([p.lat, p.lon], { icon: icon }).addTo(map).bindPopup('<strong>' + (p.callsign || '(unknown)') + '</strong><br/>' + (p.lat ? ('<strong>Lat:</strong> ' + p.lat.toFixed(4) + ' <strong>Lon:</strong> ' + p.lon.toFixed(4)) : ''));
       });
     })();
   </script>
@@ -90,4 +101,5 @@
     <a href="/">Home</a> | <a href="/saved">My Watchlist</a> | <a href="/airportQuery">Search Another Airport</a>
   </footer>
 </body>
+
 </html>

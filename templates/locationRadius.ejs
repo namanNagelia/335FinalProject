@@ -1,67 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>Location Radius</title>
   <link rel="stylesheet" href="/styles.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 </head>
+
 <body>
   <header>
     <h1>Location</h1>
   </header>
   <main>
-    <p class="intro">Location: <%= location.lat %>, <%= location.lon %> · Radius: <%= radius %></p>
-    <div class="board">
-      <section class="board-left">
-        <div class="board-title">
-          <strong>Nearby Flights</strong>
-          <span class="pill"><%= ((airborneFlights && airborneFlights.flying ? airborneFlights.flying.length : 0) + (airborneFlights && airborneFlights.landed ? airborneFlights.landed.length : 0)) %> aircraft</span>
-        </div>
-        <table class="board-table">
-          <thead>
+    <p><strong>Location:</strong>
+      <%= location.lat %>, <%= location.lon %> · <strong>Radius:</strong>
+          <%= radius %>
+    </p>
+    <aside>
+      <div id="map" data-center-lat="<%= location.lat %>" data-center-lon="<%= location.lon %>"
+        data-planes='<%- JSON.stringify(((airborneFlights && airborneFlights.flying) ? airborneFlights.flying : []).concat((airborneFlights && airborneFlights.landed) ? airborneFlights.landed : []).filter(function (f) { return f && f.lat != null && f.lon != null; })) %>'>
+      </div>
+    </aside>
+    <section>
+      <p><strong>Nearby Flights</strong> — <%= ((airborneFlights && airborneFlights.flying ?
+          airborneFlights.flying.length : 0) + (airborneFlights && airborneFlights.landed ?
+          airborneFlights.landed.length : 0)) %> aircraft</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Callsign</th>
+            <th>Alt</th>
+            <th>Speed</th>
+            <th>Heading</th>
+            <th>Pos</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% var all=[]; if (airborneFlights && airborneFlights.flying) all=all.concat(airborneFlights.flying); if
+            (airborneFlights && airborneFlights.landed) all=all.concat(airborneFlights.landed); if (!all ||
+            all.length===0) { %>
             <tr>
-              <th>Callsign</th>
-              <th>Alt</th>
-              <th>Speed</th>
-              <th>Heading</th>
-              <th>Pos</th>
-              <th></th>
+              <td colspan="6">No aircraft found nearby</td>
             </tr>
-          </thead>
-          <tbody>
-            <% var all = [];
-               if (airborneFlights && airborneFlights.flying) all = all.concat(airborneFlights.flying);
-               if (airborneFlights && airborneFlights.landed) all = all.concat(airborneFlights.landed);
-               if (!all || all.length === 0) { %>
-              <tr><td colspan="6" class="no-data">No aircraft found nearby</td></tr>
             <% } else { all.forEach(function(flight) { %>
-              <tr class="<%= flight.on_ground ? 'status-ground' : '' %>">
-                <td><span class="callsign"><%= flight.callsign || '(unknown)' %></span><div class="meta"><%= flight.icao24 %></div></td>
-                <td><%= flight.altitude_m != null ? Math.round(flight.altitude_m) + ' m' : '—' %></td>
-                <td><%= flight.speed_mps != null ? Math.round(flight.speed_mps) + ' m/s' : '—' %></td>
-                <td><%= flight.heading != null ? Math.round(flight.heading) + '°' : '—' %></td>
-                <td><%= flight.lat != null ? flight.lat.toFixed(4) : '—' %>, <%= flight.lon != null ? flight.lon.toFixed(4) : '—' %></td>
-                <td class="links">
+              <tr>
+                <td>
+                  <%= flight.callsign || '(unknown)' %><br>
+                    <%= flight.icao24 %>
+                </td>
+                <td>
+                  <%= flight.altitude_m !=null ? Math.round(flight.altitude_m) + ' m' : '—' %>
+                </td>
+                <td>
+                  <%= flight.speed_mps !=null ? Math.round(flight.speed_mps) + ' m/s' : '—' %>
+                </td>
+                <td>
+                  <%= flight.heading !=null ? Math.round(flight.heading) + '°' : '—' %>
+                </td>
+                <td>
+                  <%= flight.lat !=null ? flight.lat.toFixed(4) : '—' %>, <%= flight.lon !=null ? flight.lon.toFixed(4)
+                      : '—' %>
+                </td>
+                <td>
                   <a href="/flight/details?callsign=<%= encodeURIComponent(flight.callsign || '') %>">Details</a>
-                  <form action="/saved/quick-add" method="POST" style="display:inline;">
+                  <form action="/saved/quick-add" method="POST">
                     <input type="hidden" name="callsign" value="<%= flight.callsign %>">
                     <input type="hidden" name="notes" value="Spotted at <%= location.lat %>, <%= location.lon %>">
-                    <button type="submit" class="btn btn-small btn-secondary" style="padding:4px 8px;font-size:11px;">Save</button>
+                    <button type="submit">Save</button>
                   </form>
                 </td>
               </tr>
-            <% }); } %>
-          </tbody>
-        </table>
-      </section>
-      <aside class="board-right">
-        <div id="map" data-center-lat="<%= location.lat %>" data-center-lon="<%= location.lon %>" data-planes='<%- JSON.stringify(((airborneFlights && airborneFlights.flying) ? airborneFlights.flying : []).concat((airborneFlights && airborneFlights.landed) ? airborneFlights.landed : []).filter(function (f) { return f && f.lat != null && f.lon != null; })) %>'></div>
-      </aside>
-    </div>
+              <% }); } %>
+        </tbody>
+      </table>
+    </section>
   </main>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script>
-    (function (){
+    (function () {
       var mapEl = document.getElementById('map');
       var centerLat = Number(mapEl.getAttribute('data-center-lat')) || 0;
       var centerLon = Number(mapEl.getAttribute('data-center-lon')) || 0;
@@ -70,32 +89,41 @@
 
       var planes = JSON.parse(mapEl.getAttribute('data-planes')) || [];
 
-      function planeHtml(color, heading){
+      function planeHtml(color, heading) {
         var svg = "<svg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='currentColor'><path d='M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9L2 14v2l7-1v4l-2 1v1l3-0.5L12 20l2 .5 3 .5v-1l-2-1v-4l7 1z'/></svg>";
-        return "<div class='plane-icon' style='color:"+color+"; transform: rotate("+(heading||0)+"deg);'>"+svg+"</div>";
+        return "<div class='plane-icon' style='color:" + color + "; transform: rotate(" + (heading || 0) + "deg);'>" + svg + "</div>";
       }
 
-      planes.forEach(function(p){
+      planes.forEach(function (p) {
         var color = p.on_ground ? '#64748b' : '#ef4444';
-        var icon = L.divIcon({ className: '', html: planeHtml(color, p.heading), iconSize: [30,30], iconAnchor: [15,15] });
-        L.marker([p.lat, p.lon], { icon: icon }).addTo(map).bindPopup('<strong>'+ (p.callsign || '(unknown)') +'</strong>');
+        var icon = L.divIcon({ className: '', html: planeHtml(color, p.heading), iconSize: [30, 30], iconAnchor: [15, 15] });
+        L.marker([p.lat, p.lon], { icon: icon }).addTo(map).bindPopup('<strong>' + (p.callsign || '(unknown)') + '</strong>');
       });
     })();
   </script>
-  <section style="max-width:1100px;margin:18px auto;padding:0 20px;">
-    <p>Flying: <%= airborneFlights.flying.length %></p>
+  <section>
+    <p><strong>Flying:</strong>
+      <%= airborneFlights.flying.length %>
+    </p>
     <ul>
       <% airborneFlights.flying.forEach(function(flight) { %>
-        <li><%= flight.callsign %> - <%= flight.lat %> - <%= flight.lon %></li>
-      <% }); %>
+        <li>
+          <%= flight.callsign %> - <%= flight.lat %> - <%= flight.lon %>
+        </li>
+        <% }); %>
     </ul>
-    <p>Landed: <%= airborneFlights.landed.length %></p>
+    <p><strong>Landed:</strong>
+      <%= airborneFlights.landed.length %>
+    </p>
     <ul>
       <% airborneFlights.landed.forEach(function(flight) { %>
-        <li><%= flight.callsign %> - <%= flight.lat %> - <%= flight.lon %></li>
-      <% }); %>
+        <li>
+          <%= flight.callsign %> - <%= flight.lat %> - <%= flight.lon %>
+        </li>
+        <% }); %>
     </ul>
     <footer><a href="/">Home</a> | <a href="/saved">My Watchlist</a></footer>
   </section>
 </body>
+
 </html>

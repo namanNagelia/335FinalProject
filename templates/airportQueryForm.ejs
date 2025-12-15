@@ -12,51 +12,35 @@
     </header>
 
     <main>
-        <div class="form-card">
-            <h2>Find Live Flights Near an Airport</h2>
-            <p class="muted" style="margin-bottom: 16px;">Enter an ICAO code to see real-time aircraft in the area</p>
+		<h2>Find Live Flights Near an Airport</h2>
+		<p>Enter an ICAO code to see real-time aircraft in the area</p>
 
-            <form action="/opensky/airport" method="get">
-                <div class="form-group">
-                    <label for="icao">Airport ICAO Code</label>
-                    <input type="text" id="icao" name="icao" placeholder="e.g., KJFK, KLAX, KIAD" required>
-                </div>
-                <div class="form-group">
-                    <label for="radius">Search Radius (km)</label>
-                    <input type="number" id="radius" name="radius" value="80" min="10" max="200">
-                </div>
-                <button type="submit" class="btn btn-primary">Search Flights</button>
-            </form>
-        </div>
+		<form action="/opensky/airport" method="get">
+			<label for="icao">Airport ICAO Code</label>
+			<input type="text" id="icao" name="icao" placeholder="e.g., KJFK, KLAX, KIAD" required>
+			<label for="radius">Search Radius (km)</label>
+			<input type="number" id="radius" name="radius" value="80" min="10" max="200">
+			<button type="submit">Search Flights</button>
+		</form>
 
-        <div class="form-card">
-            <h2>Airport Details Only</h2>
-            <p class="muted" style="margin-bottom: 16px;">Get basic information about an airport</p>
+		<h2>Airport Details Only</h2>
+		<p>Get basic information about an airport</p>
 
-            <form action="/airport" method="get">
-                <div class="form-group">
-                    <label for="icao2">Airport ICAO Code</label>
-                    <input type="text" id="icao2" name="icao" placeholder="e.g., KJFK" required>
-                </div>
-                <button type="submit" class="btn btn-secondary">Get Airport Info</button>
-            </form>
-        </div>
+		<form action="/airport" method="get">
+			<label for="icao2">Airport ICAO Code</label>
+			<input type="text" id="icao2" name="icao" placeholder="e.g., KJFK" required>
+			<button type="submit">Get Airport Info</button>
+		</form>
 
-        <div class="detail-card">
-            <h2 style="margin: 0 0 12px 0; font-size: 16px;">Common Airport Codes</h2>
-            <div class="detail-grid">
-                <div>
-                    <div class="detail-row"><div class="detail-key">KJFK</div><div class="detail-value">New York JFK</div></div>
-                    <div class="detail-row"><div class="detail-key">KLAX</div><div class="detail-value">Los Angeles</div></div>
-                    <div class="detail-row"><div class="detail-key">KORD</div><div class="detail-value">Chicago O'Hare</div></div>
-                </div>
-                <div>
-                    <div class="detail-row"><div class="detail-key">KDFW</div><div class="detail-value">Dallas Fort Worth</div></div>
-                    <div class="detail-row"><div class="detail-key">KIAD</div><div class="detail-value">Washington Dulles</div></div>
-                    <div class="detail-row"><div class="detail-key">KATL</div><div class="detail-value">Atlanta</div></div>
-                </div>
-            </div>
-        </div>
+		<h2>Common Airport Codes</h2>
+		<ul>
+			<li>KJFK — New York JFK</li>
+			<li>KLAX — Los Angeles</li>
+			<li>KORD — Chicago O'Hare</li>
+			<li>KDFW — Dallas Fort Worth</li>
+			<li>KIAD — Washington Dulles</li>
+			<li>KATL — Atlanta</li>
+		</ul>
     </main>
 
     <footer>
