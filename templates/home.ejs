@@ -7,16 +7,77 @@
 </head>
 
 <body>
-  <h1>Flight Tracker</h1>
-  <p>Quick links to try the available endpoints:</p>
-  <ul>
-    <li>
-      <a href="/airportQuery">Airport Lookup</a>
-    </li>
-  </ul>
-  <p>Edit the query parameters in the URL to explore other airports and flights.</p>
+  <header>
+    <h1>Flight Tracker</h1>
+  </header>
+
+  <main>
+    <p class="intro">Track flights in real-time, search airports, and save flights to your personal watchlist.</p>
+
+    <div class="flights-grid" style="margin-top: 24px;">
+      <div class="flight-card">
+        <div class="flight-card-header">
+          <div>
+            <div class="flight-card-callsign">Airport Search</div>
+            <div class="flight-card-airline">Find flights near any airport</div>
+          </div>
+        </div>
+        <p style="color: #475569; margin: 12px 0;">Search for airports by ICAO code to see live flights in the area with real-time data from OpenSky Network.</p>
+        <a href="/airportQuery" class="btn btn-primary">Search Airports</a>
+      </div>
+
+      <div class="flight-card">
+        <div class="flight-card-header">
+          <div>
+            <div class="flight-card-callsign">My Watchlist</div>
+            <div class="flight-card-airline">Track your saved flights</div>
+          </div>
+        </div>
+        <p style="color: #475569; margin: 12px 0;">View and manage flights you've saved. Add notes, set priorities, and stay organized.</p>
+        <a href="/saved" class="btn btn-primary">View Watchlist</a>
+      </div>
+
+      <div class="flight-card">
+        <div class="flight-card-header">
+          <div>
+            <div class="flight-card-callsign">Add Flight</div>
+            <div class="flight-card-airline">Manually add to watchlist</div>
+          </div>
+        </div>
+        <p style="color: #475569; margin: 12px 0;">Know a flight number? Add it directly to your watchlist with custom notes and priority.</p>
+        <a href="/saved/add" class="btn btn-secondary">Add Flight</a>
+      </div>
+    </div>
+
+    <div class="detail-card" style="margin-top: 24px;">
+      <h2 style="margin: 0 0 12px 0; font-size: 16px;">How it works</h2>
+      <div class="detail-grid">
+        <div>
+          <div class="detail-row">
+            <div class="detail-key">1. Search</div>
+            <div class="detail-value">Find airports and view live flights</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-key">2. Track</div>
+            <div class="detail-value">Get detailed flight information</div>
+          </div>
+        </div>
+        <div>
+          <div class="detail-row">
+            <div class="detail-key">3. Save</div>
+            <div class="detail-value">Add flights to your watchlist</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-key">4. Organize</div>
+            <div class="detail-value">Set priorities and add notes</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
   <footer>
-    <a href="/">Home</a>
+    <p>Flight data powered by OpenSky Network & AviationStack</p>
   </footer>
 </body>
 

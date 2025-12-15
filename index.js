@@ -1,36 +1,32 @@
 require("dotenv").config({ silent: true });
 const express = require("express");
-const { readFileSync } = require("fs");
 const path = require("path");
-
-// const fetch = require("node-fetch");
-const { MongoClient, ServerApiVersion } = require("mongodb");
-const { name } = require("ejs");
+const mongoose = require("mongoose");
+const savedFlightsRouter = require("./routes/savedFlights");
 
 const app = express();
 const PORT = process.argv[2] || 4000;
-
-app.listen(PORT);
-process.stdout.write(`Server is running on port ${PORT}\n`);
 
 app.set("view engine", "ejs");
 app.set("views", path.resolve(__dirname, "templates"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-/** make the style sheet global */
 app.get("/styles.css", (req, res) => {
   res.sendFile(path.resolve(__dirname, "templates", "styles.css"));
 });
 
 const uri = process.env.MONGODB_CONNECTION_STRING;
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  },
-});
+mongoose
+  .connect(uri)
+  .then(() => {
+    console.log("Connected to MongoDB with Mongoose");
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });
+
+app.use("/saved", savedFlightsRouter);
 
 //Help3r for open sky api
 function radiusToBoundingBox(lat, lon, radiusKm) {
@@ -120,16 +116,18 @@ app.get("/opensky/airport", async (req, res) => {
         lon: airport.longitude_deg,
       },
       planes:
-        openSkyData.states?.map((s) => ({
-          icao24: s[0],
-          callsign: s[1]?.trim() || "(unknown)",
-          lat: s[6],
-          lon: s[5],
-          altitude_m: s[7],
-          speed_mps: s[9],
-          heading: s[10],
-          on_ground: s[8],
-        })).sort((a, b) => a.callsign.localeCompare(b.callsign)) || [],
+        openSkyData.states
+          ?.map((s) => ({
+            icao24: s[0],
+            callsign: s[1]?.trim() || "(unknown)",
+            lat: s[6],
+            lon: s[5],
+            altitude_m: s[7],
+            speed_mps: s[9],
+            heading: s[10],
+            on_ground: s[8],
+          }))
+          .sort((a, b) => a.callsign.localeCompare(b.callsign)) || [],
     });
   } catch {
     res.status(500).json({ error: "Failed to fetch live airport planes" });
@@ -151,17 +149,24 @@ app.get("/opensky/location", async (req, res) => {
 
     const data = await response.json();
 
-    let flights = data.states?.map((s) => ({
-      icao24: s[0],
-      callsign: s[1]?.trim() || "(unknown)",
-      lat: s[6],
-      lon: s[5],
-      altitude_m: s[7],
-      speed_mps: s[9],
-      heading: s[10],
-      on_ground: s[8],
-    })).sort((a, b) => a.callsign.localeCompare(b.callsign)).sort((a, b) => a.on_ground - b.on_ground) || [];
-    const airborneFlights = {flying: flights.filter((f) => f.on_ground === true), landed: flights.filter((f) => f.on_ground === false)};
+    let flights =
+      data.states
+        ?.map((s) => ({
+          icao24: s[0],
+          callsign: s[1]?.trim() || "(unknown)",
+          lat: s[6],
+          lon: s[5],
+          altitude_m: s[7],
+          speed_mps: s[9],
+          heading: s[10],
+          on_ground: s[8],
+        }))
+        .sort((a, b) => a.callsign.localeCompare(b.callsign))
+        .sort((a, b) => a.on_ground - b.on_ground) || [];
+    const airborneFlights = {
+      flying: flights.filter((f) => f.on_ground === true),
+      landed: flights.filter((f) => f.on_ground === false),
+    };
 
     res.render("locationRadius", {
       location: {
@@ -198,10 +203,14 @@ app.get("/flight/details", async (req, res) => {
     const response = await fetch(url);
     const data = await response.json();
 
-    res.json({
-      resolved_by: callsign ? "flight_icao" : "flight_iata",
-      query: callsign || flight_iata,
-      data,
+    var flight =
+      data && data.data && data.data.length > 0 ? data.data[0] : null;
+
+    res.render("flightDetails", {
+      flight: flight,
+      meta: data && data.pagination ? data.pagination : null,
+      saved: req.query.saved === "true",
+      callsignParam: callsign || flight_iata,
     });
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch flight details" });
@@ -214,4 +223,8 @@ app.get("/", (req, res) => {
 
 app.get("/airportQuery", async (req, res) => {
   res.render("airportQueryForm");
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

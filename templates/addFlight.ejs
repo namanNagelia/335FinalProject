@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Add Flight - Watchlist</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>Add Flight to Watchlist</h1>
+    </header>
+
+    <main>
+        <div class="form-card" style="max-width: 600px;">
+            <h2>Flight Information</h2>
+            <form action="/saved/add" method="POST">
+                <div class="detail-grid">
+                    <div class="form-group">
+                        <label for="callsign">Callsign / Flight Number *</label>
+                        <input type="text" name="callsign" id="callsign" required placeholder="e.g., DAL123, AA456" value="<%= prefill.callsign || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label for="flightIata">Flight IATA Code</label>
+                        <input type="text" name="flightIata" id="flightIata" placeholder="e.g., DL123" value="<%= prefill.flightIata || '' %>">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="airline">Airline</label>
+                    <input type="text" name="airline" id="airline" placeholder="e.g., Delta Air Lines" value="<%= prefill.airline || '' %>">
+                </div>
+
+                <h2 style="margin-top: 20px;">Route</h2>
+                <div class="detail-grid">
+                    <div>
+                        <div class="form-group">
+                            <label for="departureAirport">Departure Airport</label>
+                            <input type="text" name="departureAirport" id="departureAirport" placeholder="e.g., Los Angeles International" value="<%= prefill.departureAirport || '' %>">
+                        </div>
+                        <div class="form-group">
+                            <label for="departureIata">Departure IATA</label>
+                            <input type="text" name="departureIata" id="departureIata" placeholder="e.g., LAX" maxlength="4" value="<%= prefill.departureIata || '' %>">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label for="arrivalAirport">Arrival Airport</label>
+                            <input type="text" name="arrivalAirport" id="arrivalAirport" placeholder="e.g., John F Kennedy International" value="<%= prefill.arrivalAirport || '' %>">
+                        </div>
+                        <div class="form-group">
+                            <label for="arrivalIata">Arrival IATA</label>
+                            <input type="text" name="arrivalIata" id="arrivalIata" placeholder="e.g., JFK" maxlength="4" value="<%= prefill.arrivalIata || '' %>">
+                        </div>
+                    </div>
+                </div>
+
+                <h2 style="margin-top: 20px;">Details</h2>
+                <div class="detail-grid">
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select name="status" id="status">
+                            <option value="">Unknown</option>
+                            <option value="scheduled">Scheduled</option>
+                            <option value="active">Active</option>
+                            <option value="landed">Landed</option>
+                            <option value="cancelled">Cancelled</option>
+                            <option value="delayed">Delayed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="priority">Priority</label>
+                        <select name="priority" id="priority">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Notes</label>
+                    <textarea name="notes" id="notes" placeholder="Add any notes about this flight..."><%= prefill.notes || '' %></textarea>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary">Save Flight</button>
+                    <a href="/saved" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <a href="/">Home</a> | <a href="/saved">Back to Watchlist</a>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Saved Flights - Watchlist</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+    <header>
+        <h1>My Flight Watchlist</h1>
+    </header>
+
+    <main>
+        <% if (typeof message !== 'undefined' && message) { %>
+        <div class="alert <%= message.includes('Error') ? 'alert-error' : 'alert-success' %>">
+            <%= message %>
+        </div>
+        <% } %>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <p class="intro">Track and manage your saved flights. Add notes and set priorities to stay organized.</p>
+            <a href="/saved/add" class="btn btn-primary">+ Add Flight Manually</a>
+        </div>
+
+        <% if (flights && flights.length > 0) { %>
+        <div class="flights-grid">
+            <% flights.forEach(function(f) { %>
+            <div class="flight-card priority-<%= f.priority %>">
+                <div class="flight-card-header">
+                    <div>
+                        <div class="flight-card-callsign"><%= f.callsign || 'Unknown' %></div>
+                        <div class="flight-card-airline"><%= f.airline || 'Unknown Airline' %></div>
+                    </div>
+                    <div class="badge"><%= f.status || 'Unknown' %></div>
+                </div>
+
+                <div class="flight-card-route">
+                    <div class="flight-card-airport">
+                        <div class="flight-card-airport-code"><%= f.departureIata || '???' %></div>
+                        <div class="flight-card-airport-name"><%= f.departureAirport || 'Unknown' %></div>
+                    </div>
+                    <div class="flight-card-arrow">→</div>
+                    <div class="flight-card-airport">
+                        <div class="flight-card-airport-code"><%= f.arrivalIata || '???' %></div>
+                        <div class="flight-card-airport-name"><%= f.arrivalAirport || 'Unknown' %></div>
+                    </div>
+                </div>
+
+                <% if (f.notes) { %>
+                <div class="flight-card-notes">
+                    <%= f.notes %>
+                </div>
+                <% } %>
+
+                <div class="flight-card-meta">
+                    <div>
+                        <span class="pill">
+                            <%= f.priority.charAt(0).toUpperCase() + f.priority.slice(1) %> Priority
+                        </span>
+                        <span class="small" style="margin-left: 8px;">
+                            Saved <%= new Date(f.savedAt).toLocaleDateString() %>
+                        </span>
+                    </div>
+                    <div>
+                        <% if (f.callsign) { %>
+                        <a href="/flight/details?callsign=<%= f.callsign %>" class="btn btn-secondary btn-small">View Details</a>
+                        <% } %>
+                        <form action="/saved/delete/<%= f._id %>" method="POST" style="display: inline;">
+                            <button type="submit" class="btn btn-danger btn-small" onclick="return confirm('Delete this flight?')">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <% }); %>
+        </div>
+        <% } else { %>
+        <div class="detail-card">
+            <div class="no-data" style="text-align: center;">
+                <p style="font-size: 18px; margin-bottom: 12px;">No saved flights yet</p>
+                <p style="color: #64748b;">Start tracking flights by searching for them and clicking "Save Flight"</p>
+                <a href="/airportQuery" class="btn btn-primary" style="margin-top: 16px;">Search Flights</a>
+            </div>
+        </div>
+        <% } %>
+    </main>
+
+    <footer>
+        <a href="/">Home</a> | <a href="/airportQuery">Search Flights</a>
+    </footer>
+</body>
+
+</html>
