@@ -1,2 +1,6 @@
-# 335FinalProject
-Miguel, Naman and Ishaans Final project for CMSC335
+**Submitted by:** Miguel Ventura (mventur3)
+**Group Members:** Miguel Ventura (mventur3), Naman Nagalia (nagalia)
+**YouTube Video Link:** https://youtu.be/f0E-rULregI?si=O_BHvOGd0D9Z0N2g
+**APIs:** OpenSky Network (https://opensky-network.org/), and AviationStack (https://aviationstack.com/)
+**Contact Email:** mventur3@umd.edu
+**Deployed App Link:** 
