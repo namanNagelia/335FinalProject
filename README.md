@@ -1,4 +1,4 @@
-**Submitted by:** Miguel Ventura (mventur3)
+**Submitted by:** Naman Nagelia (nnagelia)
 
 **Group Members:** Miguel Ventura (mventur3), Naman Nagalia (nagalia), Ishaan Chakraborty (ishaanc)
 
